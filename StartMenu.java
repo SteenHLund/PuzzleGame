@@ -3,24 +3,23 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class StartMenu implements ActionListener {
 	public static JFrame startFrame;
-	private static JButton start = new JButton(), quit = new JButton(), fifteen = new JButton(), nine = new JButton();
+	private static JButton start = new JButton(), quit = new JButton(), sq4 = new JButton(), sq3 = new JButton(), sq5 = new JButton(), test = new JButton();
 	private static JLabel title = new JLabel();
 	
-	public void createStartMenu() {
+	public StartMenu() {
 		startFrame = new JFrame();
 		startFrame.setSize(300, 225);
 		startFrame.setLocationRelativeTo(null);
 		startFrame.setResizable(false);
 		startFrame.setDefaultCloseOperation(startFrame.EXIT_ON_CLOSE);
 		startFrame.setVisible(true);
-		//startFrame.setLayout(new BoxLayout(startFrame.getContentPane(), BoxLayout.LINE_AXIS));
+		startFrame.setTitle("Sliding Puzzle Ultra");
 		addStartButtons();
 	}
 	
@@ -47,6 +46,7 @@ public class StartMenu implements ActionListener {
 	
 	private void switchToSizeButtons() {
 		Dimension size2 = new Dimension(200, 50);
+		startFrame.setSize(300, 275);
 		
 		quit.setEnabled(false);
 		quit.setVisible(false);
@@ -54,17 +54,26 @@ public class StartMenu implements ActionListener {
 		start.setEnabled(false);
 		start.setVisible(false);
 		
-		nine.setSize(size2);
-		nine.setText("Easy - 3x3");
-		nine.setVisible(true);
-		nine.addActionListener(this);
-		addComponent(nine, 50, 75);
+		sq3.setSize(size2);
+		sq3.setText("Easy - 3x3");
+		sq3.setVisible(true);
+		sq3.addActionListener(this);
+		addComponent(sq3, 50, 75);
 		
-		fifteen.setSize(size2);
-		fifteen.setText("Medium - 4x4");
-		fifteen.setVisible(true);
-		fifteen.addActionListener(this);
-		addComponent(fifteen, 50, 130);
+		sq4.setSize(size2);
+		sq4.setText("Medium - 4x4");
+		sq4.setVisible(true);
+		sq4.addActionListener(this);
+		addComponent(sq4, 50, 130);
+		
+		sq5.setSize(size2);
+		sq5.setText("Hard - 5x5");
+		sq5.setVisible(true);
+		sq5.addActionListener(this);
+		addComponent(sq5, 50, 190);
+		
+		test.setVisible(false);
+		addComponent(test, 0, 0);
 	}
 	
 	private static void addComponent(Component c, int x, int y){
@@ -79,9 +88,17 @@ public class StartMenu implements ActionListener {
 			switchToSizeButtons();
 		else if (src == quit)
 			System.exit(0);
-		else if (src == nine)
-			System.exit(0);
-		else if (src == fifteen)
-			System.exit(0);
+		else if (src == sq3) {
+			startFrame.dispose();
+			new Game(3);
+		}
+		else if (src == sq4) {
+			startFrame.dispose();
+			new Game(4);
+		}
+		else if (src == sq5) {
+			startFrame.dispose();
+			new Game(5);
+		}
 	}
 }
