@@ -1,0 +1,22 @@
+import java.awt.Color;
+import java.awt.Graphics;
+
+public class GamePanel extends Info {
+	public void paintComponent(Graphics g) {
+		int counter = 0;
+		
+		super.paintComponent(g);
+		for (int i = 0; i < boardType; i++) {
+			for(int q = 0; q < boardType; q++) {
+				g.setColor(Color.BLACK);
+				g.fillRect(50 + q*60, 50 + i*60, 60, 60);
+				g.setColor(Color.WHITE);
+				g.drawRect(50 + q*60, 50 + i*60, 60, 60);
+				
+				if(counter != boardType*boardType - 1)
+					g.drawString(" " + numbers.get(counter) + " ", 73 + q*60, 83 + i*60);
+				counter++;
+			}
+		}
+	}
+}
