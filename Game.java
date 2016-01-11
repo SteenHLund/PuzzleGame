@@ -1,17 +1,20 @@
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.PointerInfo;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.Timer;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-public class Game extends Info implements ActionListener, KeyListener {
+public class Game extends Info implements ActionListener, MouseListener {
 	public static GamePanel gamePanel;
 	public static Timer timer;
 	public static JButton quit = new JButton(), start = new JButton(), useless = new JButton();
@@ -37,19 +40,40 @@ public class Game extends Info implements ActionListener, KeyListener {
 		gameFrame.setDefaultCloseOperation(gameFrame.EXIT_ON_CLOSE);
 		gameFrame.setResizable(false);
 		gameFrame.setVisible(true);
-		gameFrame.addKeyListener(this);
+		gameFrame.addMouseListener(this);
 		
 		setUpLabels();
 		
 		timer = new Timer(TIMER_SPEED, this);
 		timer.setInitialDelay(TIMER_DELAY);
 		
-		for(int i = 1; i < boardType*boardType; i++)
-			numbers.add(i);
-		numbers.add(0);
-		
+		int counter = 1;
+		for (int i = 0; i < boardType; i++) {
+			for(int q = 0; q < boardType; q++) {
+				if(counter != boardType*boardType)
+					numbers.add(new Block(blockSize, counter, new Point(50 + q*60, 50 + i*60)));
+				counter++;
+			}
+		}
+		numbers.add(new Block(blockSize, 0, new Point(50 + (boardType - 1)*60, 50 + (boardType - 1)*60)));
+	}
+	
+	public int zeroPos() {
+		int posOfZero = 0;
 		for(int i = 0; i < numbers.size(); i++)
-			System.out.print(numbers.get(i) + ", ");
+			if(numbers.get(i).getValue() == 0)
+				posOfZero = i;
+		return posOfZero;
+	}
+	
+	public boolean nextToZero(int pos) {
+		boolean isNeighbor = false;
+		int zero = zeroPos();
+		
+		if(pos - boardType == zero || pos + boardType == zero || (pos - 1 == zero && pos % boardType != 1) || (pos + 1 == zero && pos % boardType != 0))
+			isNeighbor = true;
+		
+		return isNeighbor;
 	}
 	
 	public void setUpLabels() {
@@ -86,18 +110,6 @@ public class Game extends Info implements ActionListener, KeyListener {
 		c.setBounds(new Rectangle(x, y, size.width, size.height));
 		gamePanel.add(c);
 	}
-	
-	public void keyTyped(KeyEvent e) {
-		
-	}
-
-	public void keyPressed(KeyEvent e) {
-		
-	}
-
-	public void keyReleased(KeyEvent e) {
-		
-	}
 
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
@@ -105,14 +117,62 @@ public class Game extends Info implements ActionListener, KeyListener {
 		if(src == start) {
 			started = true;
 			timer.start();
-		}
-		else if(src == quit)
+		} else if(src == quit)
 			System.exit(0);
 		
 		if(gameOver == false  && started) {
 			time += TIMER_SPEED;
 			gameTime.setText("Time: " + (time / 1000) + "." + (time / 100 % 10));
-			repaint();
 		}
+	}
+
+	public void mouseClicked(MouseEvent e) {
+		
+	}
+
+	public void mousePressed(MouseEvent e) {
+		
+	}
+
+	public void mouseReleased(MouseEvent e) {
+		PointerInfo pointLoc = MouseInfo.getPointerInfo();
+		Point mouseLoc = pointLoc.getLocation();
+		System.out.println(mouseLoc.getX() - 471 + " " + numbers.get(24).getPos().x);
+		boolean clickedAlready = false;
+		
+		for(int i = 0; i < numbers.size(); i++) {
+			if (clickedAlready == false) {
+				if (mouseLoc.getX() - 471 < numbers.get(i).blockInfo().x + numbers.get(i).blockInfo().getWidth()
+						&& mouseLoc.getX() - 471 > numbers.get(i).blockInfo().x) {
+					if (mouseLoc.getY() - 307 < numbers.get(i).blockInfo().y + numbers.get(i).blockInfo().getHeight()
+							&& mouseLoc.getY() - 307 > numbers.get(i).blockInfo().y) {
+						if (nextToZero(i)) {
+							System.out.println("Block " + numbers.get(i).getValue() + " was clicked!");
+							int tempZeroSpace = zeroPos();
+							Block tempZeroBlock = numbers.get(tempZeroSpace);
+							Block tempSwappingBlock = numbers.get(i);
+							Point temp = tempSwappingBlock.getPos();
+							tempSwappingBlock.setPos(tempZeroBlock.getPos());
+							
+							tempZeroBlock.setPos(temp);
+							
+							numbers.set(tempZeroSpace, numbers.get(i));
+							numbers.set(i, tempZeroBlock);
+							
+							clickedAlready = true;
+						}
+					}
+				}
+			}
+		}
+		gamePanel.repaint();
+	}
+
+	public void mouseEntered(MouseEvent e) {
+		
+	}
+
+	public void mouseExited(MouseEvent e) {
+		
 	}
 }
