@@ -2,20 +2,21 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 public class GamePanel extends Info {
+	private static final long serialVersionUID = 1L;
+
 	public void paintComponent(Graphics g) {
-		int counter = 0;
-		
 		super.paintComponent(g);
-		for (int i = 0; i < boardType; i++) {
-			for(int q = 0; q < boardType; q++) {
-				g.setColor(Color.BLACK);
-				g.fillRect(50 + q*60, 50 + i*60, 60, 60);
+		
+		g.setColor(Color.BLACK);
+		g.fillRect(40, 40, 60 + (boardType - 1)*60 + 10, 60 + (boardType - 1)*60 + 10);
+		
+		for (int i = 0; i < numbers.size(); i++) {
+			if(numbers.get(i).getValue() != 0) {
 				g.setColor(Color.WHITE);
-				g.drawRect(50 + q*60, 50 + i*60, 60, 60);
+				g.fillRect(numbers.get(i).getPos().x, numbers.get(i).getPos().y, numbers.get(i).getSize().width, numbers.get(i).getSize().height);
 				
-				if(counter != boardType*boardType - 1)
-					g.drawString(" " + numbers.get(counter) + " ", 73 + q*60, 83 + i*60);
-				counter++;
+				g.setColor(Color.RED);
+				g.drawString(" " + numbers.get(i).getValue() + " ", numbers.get(i).getPos().x + 15, numbers.get(i).getPos().y + 30);
 			}
 		}
 	}
