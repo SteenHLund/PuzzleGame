@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 public class Info extends JPanel {
 	final int TIMER_SPEED = 100;
 	final int TIMER_DELAY = 0;
+	
+	public final Dimension blockSize = new Dimension(50, 50);
 
 	public static int time = 0, boardType;
 
@@ -16,5 +18,5 @@ public class Info extends JPanel {
 	
 	public static boolean gameOver = false, started = false;
 	
-	public static ArrayList<Integer> numbers = new ArrayList<Integer>();
+	public static ArrayList<Block> numbers = new ArrayList<Block>();
 }
