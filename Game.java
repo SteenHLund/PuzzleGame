@@ -25,11 +25,11 @@ public class Game extends Info implements ActionListener, MouseListener, KeyList
 	public Game(int gameBoardType) {
 		boardType = gameBoardType;
 		if(boardType == 3)
-			boardSize = new Dimension(275, 330);
+			boardSize = new Dimension(400, 330);
 		else if(boardType == 4)
-			boardSize = new Dimension(335, 390);
+			boardSize = new Dimension(460, 390);
 		else if(boardType == 5)
-			boardSize = new Dimension(395, 450);
+			boardSize = new Dimension(520, 450);
 		
 		gameFrame = new JFrame();
 		gamePanel = new GamePanel();
@@ -43,16 +43,21 @@ public class Game extends Info implements ActionListener, MouseListener, KeyList
 		gameFrame.setResizable(false);
 		gameFrame.setVisible(true);
 		gameFrame.addMouseListener(this);
+		gameFrame.addKeyListener(this);
 		
 		setUpLabels();
 		
 		timer = new Timer(TIMER_SPEED, this);
 		timer.setInitialDelay(TIMER_DELAY);
 		
+		numbers.add(new Block(blockSize, 2, new Point(50, 50)));
+		numbers.add(new Block(blockSize, 3, new Point(110, 50)));
+		numbers.add(new Block(blockSize, 1, new Point(170, 50)));
+		
 		int counter = 1;
 		for (int i = 0; i < boardType; i++) {
 			for(int q = 0; q < boardType; q++) {
-				if(counter != boardType*boardType)
+				if(counter != boardType*boardType && counter > 3)
 					numbers.add(new Block(blockSize, counter, new Point(50 + q*60, 50 + i*60)));
 				counter++;
 			}
@@ -98,6 +103,7 @@ public class Game extends Info implements ActionListener, MouseListener, KeyList
 		quit.setText("Quit");
 		quit.setVisible(true);
 		quit.addActionListener(this);
+		quit.setFocusable(false);
 		addComponent(quit, gameFrame.getWidth() - 140, gameFrame.getHeight() - 90, size);
 		
 		useless.setVisible(false);
@@ -156,17 +162,7 @@ public class Game extends Info implements ActionListener, MouseListener, KeyList
 						if (mouseLoc.getY() - 25 < numbers.get(i).blockInfo().y + numbers.get(i).blockInfo().getHeight()
 								&& mouseLoc.getY() - 25 > numbers.get(i).blockInfo().y) {
 							if (nextToZero(i)) {
-								int tempZeroSpace = zeroPos();
-								Block tempZeroBlock = numbers.get(tempZeroSpace);
-								Block tempSwappingBlock = numbers.get(i);
-								Point temp = tempSwappingBlock.getPos();
-								tempSwappingBlock.setPos(tempZeroBlock.getPos());
-
-								tempZeroBlock.setPos(temp);
-
-								numbers.set(tempZeroSpace, numbers.get(i));
-								numbers.set(i, tempZeroBlock);
-
+								swap(i);
 								clickedAlready = true;
 							}
 						}
@@ -178,7 +174,7 @@ public class Game extends Info implements ActionListener, MouseListener, KeyList
 	}
 
 	public void mouseEntered(MouseEvent e) {
-		
+	
 	}
 
 	public void mouseExited(MouseEvent e) {
@@ -186,11 +182,47 @@ public class Game extends Info implements ActionListener, MouseListener, KeyList
 	}
 
 	public void keyTyped(KeyEvent e) {
-		
+	
 	}
 
 	public void keyPressed(KeyEvent e) {
+		started = true;
+		if (!timer.isRunning())
+			timer.start();
 		
+		int key = e.getKeyCode();
+		int zero = zeroPos();
+		
+		if(key == 37) {
+			if(nextToZero(zero - 1))
+				swap(zero - 1);
+		} else if(key == 38) {
+			if(nextToZero(zero - boardType))
+				swap(zero - boardType);
+		} else if(key == 39) {
+			if(nextToZero(zero + 1))
+				swap(zero + 1);
+		} else if(key == 40) {
+			if(nextToZero(zero + boardType))
+				swap(zero + boardType);
+		}
+		
+		gameFrame.repaint();
+	}
+	
+	public void swap(int pos) {
+		if (pos >= 0 && pos < numbers.size()) {
+			int tempZeroSpace = zeroPos();
+			Block tempZeroBlock = numbers.get(tempZeroSpace);
+			Block tempSwappingBlock = numbers.get(pos);
+			Point temp = tempSwappingBlock.getPos();
+			tempSwappingBlock.setPos(tempZeroBlock.getPos());
+
+			tempZeroBlock.setPos(temp);
+
+			numbers.set(tempZeroSpace, numbers.get(pos));
+			numbers.set(pos, tempZeroBlock);
+		}
 	}
 
 	public void keyReleased(KeyEvent e) {
