@@ -19,5 +19,14 @@ public class GamePanel extends Info {
 				g.drawString(" " + numbers.get(i).getValue() + " ", numbers.get(i).getPos().x + 15, numbers.get(i).getPos().y + 30);
 			}
 		}
+		
+		if(gameOver) {
+			g.setColor(Color.WHITE);
+			g.fillRect(boardType * 30 - 45, boardType * 30 + 25, 180, 40);
+			g.setColor(Color.BLACK);
+			g.drawRect(boardType * 30 - 45, boardType * 30 + 25, 180, 40);
+			g.setColor(Color.RED);
+			g.drawString("You won in " + (time / 1000) + "." + (time / 100 % 10) + " seconds!", boardType * 30 - 30, 50 + boardType * 30);
+		}
 	}
 }
