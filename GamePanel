@@ -1,14 +1,15 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 public class GamePanel extends Info {
 	private static final long serialVersionUID = 1L;
-	public BufferedReader input;
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		
+		Font highFont = new Font(Font.SANS_SERIF, 0, 12);
+		g.setFont(highFont);
 		
 		g.setColor(Color.BLACK);
 		g.fillRect(49, 49, 60 + (boardType - 1)*60 - 1, 60 + (boardType - 1)*60 - 1);
@@ -24,36 +25,28 @@ public class GamePanel extends Info {
 		}
 		
 		try
-		{
-			if(boardType == 3)
-				input = new BufferedReader(new FileReader(high3));
-			else if(boardType == 4)
-				input = new BufferedReader(new FileReader(high4));
-			else
-				input = new BufferedReader(new FileReader(high5));
-			
-			
+		{	
 			g.setColor(Color.WHITE);
-			g.fillRect(80 + boardType * 60, 50, 100, 180);
+			g.fillRect(80 + boardType * 60, 50, 150, 180);
 			g.setColor(Color.BLACK);
-			g.drawRect(80 + boardType * 60, 50, 100, 180);
-			String currentLine = "";
-			int tempCounter = 1;
-			while ((currentLine = input.readLine()) != null) {
-				g.drawString(currentLine, 90 + boardType * 60, 17*tempCounter + 53);
-				tempCounter++;
-			}
+			g.drawRect(80 + boardType * 60, 50, 150, 180);
+			
+			for(int i = 0; i < highscores.size(); i++)
+				g.drawString(highscores.get(i), 90 + boardType * 60, 17*(i + 1) + 53);
+			
 		} catch (Exception error) {
 			System.out.println("Cannot find or read high scores file.");
 		}
 		
 		if(gameOver) {
 			g.setColor(Color.WHITE);
-			g.fillRect(boardType * 30 - 45, boardType * 30 + 25, 180, 40);
+			g.fillRect(boardType * 30 - 45, boardType * 30 + 15, 190, 50);
 			g.setColor(Color.BLACK);
-			g.drawRect(boardType * 30 - 45, boardType * 30 + 25, 180, 40);
+			g.drawRect(boardType * 30 - 45, boardType * 30 + 15, 190, 50);
 			g.setColor(Color.RED);
-			g.drawString("You won in " + (time / 1000) + "." + (time / 100 % 10) + " seconds!", boardType * 30 - 35, 50 + boardType * 30);
+			g.drawString("  You won in " + (time / 1000) + "." + (time / 100 % 10) + " seconds!", boardType * 30 - 35, 30 + boardType * 30);
+			g.drawString("If you beat a high score, enter", boardType * 30 - 35, 45 + boardType * 30);
+			g.drawString("your name in the bottom right", boardType * 30 - 35, 60 + boardType * 30);
 		}
 	}
 }
