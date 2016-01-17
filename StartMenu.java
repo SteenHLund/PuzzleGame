@@ -12,6 +12,7 @@ public class StartMenu implements ActionListener {
 	private static JButton start = new JButton(), quit = new JButton(), sq4 = new JButton(), sq3 = new JButton(), sq5 = new JButton(), test = new JButton();
 	private static JLabel title = new JLabel();
 	
+	//Instantiates the start menu
 	public StartMenu() {
 		startFrame = new JFrame();
 		startFrame.setSize(300, 225);
@@ -20,9 +21,11 @@ public class StartMenu implements ActionListener {
 		startFrame.setDefaultCloseOperation(startFrame.EXIT_ON_CLOSE);
 		startFrame.setVisible(true);
 		startFrame.setTitle("Sliding Puzzle Ultra");
+		//Adds all the buttons to the start menu
 		addStartButtons();
 	}
 	
+	//Adds all of the labels and buttons to the Jframe
 	private void addStartButtons() {
 		Dimension size = new Dimension(200, 50);
 		
@@ -44,6 +47,7 @@ public class StartMenu implements ActionListener {
 		addComponent(quit, 50, 130);
 	}
 	
+	//Swaps all of the previous buttons to disabled and invisible and creates the ones for size
 	private void switchToSizeButtons() {
 		Dimension size2 = new Dimension(200, 50);
 		startFrame.setSize(300, 275);
@@ -88,6 +92,7 @@ public class StartMenu implements ActionListener {
 			switchToSizeButtons();
 		else if (src == quit)
 			System.exit(0);
+		//The following 3 are for the sizes
 		else if (src == sq3) {
 			startFrame.dispose();
 			new Game(3);
