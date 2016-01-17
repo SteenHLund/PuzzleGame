@@ -1,29 +1,54 @@
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.util.Random;
 
+//Implements a jpanels graphics as the entire purpose of this class
 public class GamePanel extends Info {
 	private static final long serialVersionUID = 1L;
 
+	//Whenever repaint is called within the Game class, it calls this
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
 		Font highFont = new Font(Font.SANS_SERIF, 0, 12);
 		g.setFont(highFont);
-		
+		//Draws the black square behind the game grid
 		g.setColor(Color.BLACK);
 		g.fillRect(49, 49, 60 + (boardType - 1)*60 - 1, 60 + (boardType - 1)*60 - 1);
 		
+		//Draws each of the blocks on to the black rectangle and writes their numbers on to them
 		for (int i = 0; i < numbers.size(); i++) {
 			if(numbers.get(i).getValue() != 0) {
-				g.setColor(Color.WHITE);
+				if(time <= 10000)
+					g.setColor(Color.WHITE);
+				//After 10 seconds and before 20 the board starts flashing yellow with white background
+				else if(time > 10000 && time <= 20000){
+					Random num = new Random();
+					int randomNum = num.nextInt(5);
+					if(randomNum == 1)
+						g.setColor(Color.YELLOW);
+					else
+						g.setColor(Color.WHITE);
+				//After 20 seconds and before 40, the board turns blue and yellow keeps flashing
+				} else if(time <= 40000) {
+					Random num = new Random();
+					int randomNum = num.nextInt(5);
+					if(randomNum == 1)
+						g.setColor(Color.YELLOW);
+					else
+						g.setColor(Color.BLUE);
+				//After 40 second the entire board turns black and you have to rely on only the numbers
+				} else
+					g.setColor(Color.BLACK);
 				g.fillRect(numbers.get(i).getPos().x, numbers.get(i).getPos().y, numbers.get(i).getSize().width, numbers.get(i).getSize().height);
-				
+				//Above draws the squares, below writes the numbers
 				g.setColor(Color.RED);
 				g.drawString(" " + numbers.get(i).getValue() + " ", numbers.get(i).getPos().x + 15, numbers.get(i).getPos().y + 30);
 			}
 		}
 		
+		//This section draws the highscore board
 		try
 		{	
 			g.setColor(Color.WHITE);
@@ -33,11 +58,11 @@ public class GamePanel extends Info {
 			
 			for(int i = 0; i < highscores.size(); i++)
 				g.drawString(highscores.get(i), 90 + boardType * 60, 17*(i + 1) + 53);
-			
 		} catch (Exception error) {
 			System.out.println("Cannot find or read high scores file.");
 		}
 		
+		//When the game is over it draws the final box and strings on to the center of the grid
 		if(gameOver) {
 			g.setColor(Color.WHITE);
 			g.fillRect(boardType * 30 - 45, boardType * 30 + 15, 190, 50);
